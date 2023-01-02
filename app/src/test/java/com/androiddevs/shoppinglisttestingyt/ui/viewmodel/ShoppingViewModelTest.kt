@@ -2,8 +2,11 @@ package com.androiddevs.shoppinglisttestingyt.ui.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.androiddevs.shoppinglisttestingyt.MainCoroutineRule
+import com.androiddevs.shoppinglisttestingyt.data.remote.responses.ImageResult
 import com.androiddevs.shoppinglisttestingyt.getOrAwaitValueTest
 import com.androiddevs.shoppinglisttestingyt.other.Constants
+import com.androiddevs.shoppinglisttestingyt.other.Event
+import com.androiddevs.shoppinglisttestingyt.other.Resource
 import com.androiddevs.shoppinglisttestingyt.other.Status
 import com.androiddevs.shoppinglisttestingyt.repositories.FakeShoppingRepository
 import com.google.common.truth.Truth.assertThat
@@ -73,4 +76,21 @@ class ShoppingViewModelTest{
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
     }
 
+    @Test
+    fun `search for images, network error, returns error`(){
+        val repository = FakeShoppingRepository()
+        repository.setShouldReturnNetworkError(true)
+        viewModel = ShoppingViewModel(repository)
+
+        viewModel.searchForImage("test")
+        val value = viewModel.images.getOrAwaitValueTest()
+        assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.ERROR)
+    }
+
+    @Test
+    fun `search for images, returns list`(){
+        viewModel.searchForImage("test")
+        val value = viewModel.images.getOrAwaitValueTest()
+        assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
+    }
 }
