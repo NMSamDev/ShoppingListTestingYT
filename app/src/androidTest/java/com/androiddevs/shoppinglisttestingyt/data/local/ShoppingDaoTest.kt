@@ -15,19 +15,24 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// SmallTest is a JUnit annotation that tells JUnit that this test is a unit test.
+// MediumTest is a JUnit annotation that tells JUnit that this test is an integration test.
+// LargeTest is a JUnit annotation that tells JUnit that this test is an end-to-end test (UI test).
+
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
 class ShoppingDaoTest {
 
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    var instantTaskExecutorRule = InstantTaskExecutorRule() // this rule is used to run the test on the main thread
 
     private lateinit var database: ShoppingItemDatabase
     private lateinit var dao: ShoppingDao
 
     @Before
     fun setup() {
+        // inMemoryDatabaseBuilder creates an in-memory database that is destroyed when the process is killed.
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             ShoppingItemDatabase::class.java
